@@ -5,6 +5,7 @@ public class KMeansSequential {
     private KMeansConfig config;
     private Point[] centroids;
     private Cluster[] clusters;
+
     public KMeansSequential(ArrayList<Point> points,KMeansConfig config) {
         this.Points = points;
         this.config = config;
@@ -41,7 +42,29 @@ public class KMeansSequential {
             }
         }
     }
+    private void update_centroids(){
+        for (Cluster cluster : clusters){
+            double sumX = 0;
+            double sumY = 0;
+            int count = 0;
+            for (Point point : cluster.getPoints()){
+                sumX += point.getX();
+                sumY += point.getY();
+                count += 1;
+            }
+            double meanX = sumX / count;
+            double meanY = sumY / count;
+            cluster.setCentroid(new Point(meanX,meanY));
+            cluster.setPoints(null);
+        }
+    }
 
-
-
+    public Point[] run(){
+        initialize_centroids();
+        for (int i = 0; i < config.maxIterations; i++) {
+            assign_points();
+            update_centroids();
+        }
+        return this.centroids;
+    }
 }

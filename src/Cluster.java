@@ -19,6 +19,7 @@ public class Cluster {
     public void setPoints(ArrayList<Point> points) {
         this.Points = points;
     }
+
     public void addPoint(Point point) {
         this.Points.add(point);
     }
