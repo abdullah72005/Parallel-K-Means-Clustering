@@ -1,7 +1,8 @@
+
 public class Cluster {
     int centroidX;
     int centroidY;
-    Point[] points;
+    Point[] Points;
 
     public int getCentroidX() {
         return centroidX;
@@ -11,13 +12,13 @@ public class Cluster {
         return centroidY;
     }
 
-    public point[] getPoints() {
-        return points;
+    public Point[] getPoints() {
+        return Points;
     }
 
-    public Cluster(point[] points,int centroidX,int centroidY) {
+    public Cluster(Point[] Points,int centroidX,int centroidY) {
         this.centroidX = centroidX;
         this.centroidY = centroidY;
-        this.points = points;
+        this.Points = Points;
     }
 }
