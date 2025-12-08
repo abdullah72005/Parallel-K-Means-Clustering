@@ -1,4 +1,4 @@
-package dataSet;
+package main;
 
 public class Point {
     private int id;
@@ -45,7 +45,7 @@ public class Point {
     }
 
     /**
-     * Parses a CSV line into a Point object.
+     * Parses a CSV line into a main.Point object.
      * Expected format: id,x,y,label
      */
     public static Point parsePoint(String line) {
@@ -71,6 +71,6 @@ public class Point {
 
     @Override
     public String toString() {
-        return String.format("Point{id=%d, x=%.6f, y=%.6f, label=%d}", id, x, y, label);
+        return String.format("main.Point{id=%d, x=%.6f, y=%.6f, label=%d}", id, x, y, label);
     }
 }

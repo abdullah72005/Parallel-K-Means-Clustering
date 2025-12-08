@@ -24,8 +24,8 @@ hs_err_pid*
 replay_pid*
 ### IntelliJ IDEA ###
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+!src/main/main/**/out/
+!src/main/test/**/out/
 
 ### Eclipse ###
 .apt_generated
@@ -36,8 +36,8 @@ out/
 .springBeans
 .sts4-cache
 bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+!src/main/main/**/bin/
+!src/main/test/**/bin/
 
 ### NetBeans ###
 /nbproject/private/

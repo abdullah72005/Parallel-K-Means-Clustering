@@ -1,3 +1,5 @@
+package main;
+
 public class KMeansConfig {
     public final int k;
     public final int maxIterations;

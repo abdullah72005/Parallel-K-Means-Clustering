@@ -1,3 +1,5 @@
+package main;
+
 import java.util.ArrayList;
 
 public class KMeansSequential {
@@ -6,11 +8,11 @@ public class KMeansSequential {
     private Point[] centroids;
     private Cluster[] clusters;
 
-    public KMeansSequential(ArrayList<Point> points,KMeansConfig config) {
+    public KMeansSequential(ArrayList<Point> points, KMeansConfig config) {
         this.Points = points;
         this.config = config;
         this.centroids  = new Point[config.k];
-        this.clusters = new Cluster[config.k];
+        this.clusters = new Cluster[config.k ];
     }
 
     private void initialize_centroids() {
@@ -55,7 +57,7 @@ public class KMeansSequential {
             double meanX = sumX / count;
             double meanY = sumY / count;
             cluster.setCentroid(new Point(meanX,meanY));
-            cluster.setPoints(null);
+            cluster.setPoints(new ArrayList<>());
         }
     }
 

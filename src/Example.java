@@ -1,6 +1,6 @@
 import dataSet.DataSetLoader;
 import dataSet.DataSetMaker;
-import dataSet.Point;
+import main.Point;
 import java.io.IOException;
 import java.util.List;
 

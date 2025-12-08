@@ -1,8 +1,14 @@
+package main;
+
 import java.util.ArrayList;
 
 public class Cluster {
-    ArrayList<Point> Points;
+    ArrayList<Point> Points = new ArrayList<>();
     Point centroid;
+
+    public Cluster(Point centroid) {
+        this.centroid = centroid;
+    }
 
     public ArrayList<Point> getPoints() {
         return Points;
@@ -24,7 +30,5 @@ public class Cluster {
         this.Points.add(point);
     }
 
-    public Cluster( Point centroid) {
-        this.centroid = centroid;
-    }
+
 }
