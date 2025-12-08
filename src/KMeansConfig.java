@@ -1,23 +1,11 @@
 public class KMeansConfig {
-    int k;
-    int maxIterations;
-    double tolerance;
+    public final int k;
+    public final int maxIterations;
+    public final double tolerance;
 
-    public KMeansConfig(int k, int maxIterations, int tolerance) {
+    public KMeansConfig(int k, int maxIterations, double tolerance) {
         this.k = k;
         this.maxIterations = maxIterations;
         this.tolerance = tolerance;
-    }
-
-    public int getK() {
-        return k;
-    }
-
-    public double getTolerance() {
-        return tolerance;
-    }
-
-    public int getMaxIterations() {
-        return maxIterations;
     }
 }
