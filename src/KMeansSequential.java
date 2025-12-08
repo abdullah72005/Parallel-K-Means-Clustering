@@ -2,29 +2,46 @@ import java.util.ArrayList;
 
 public class KMeansSequential {
     private ArrayList<Point> Points;
-    private KMeansConfig KMeansConfig;
-    private ArrayList<Point> centroids;
-    private Cluster clusters;
-    public KMeansSequential(ArrayList<Point> points,KMeansConfig KMeansConfig) {
+    private KMeansConfig config;
+    private Point[] centroids;
+    private Cluster[] clusters;
+    public KMeansSequential(ArrayList<Point> points,KMeansConfig config) {
         this.Points = points;
-        this.KMeansConfig = KMeansConfig;
+        this.config = config;
+        this.centroids  = new Point[config.k];
+        this.clusters = new Cluster[config.k];
     }
 
     private void initialize_centroids() {
-        for (int i = 0; i < this.KMeansConfig.k; i++) {
+        for (int i = 0; i < this.config.k; i++) {
             double x = Math.random() * 100;
             double y = Math.random() * 100;
             Point centroid = new Point(x, y);
-            this.centroids.add(centroid);
+            this.centroids[i] = centroid;
+            this.clusters[i] = new Cluster(centroid);
         }
     }
 
     private void assign_points() {
         for (Point point : this.Points){
-            int closest;
-            for (Point centroid : this.centroids) {
-
+            double closest_distance = Double.POSITIVE_INFINITY;
+            Cluster closest_ref = null;
+            for (Cluster cluster : this.clusters) {
+                double distance = Math.sqrt(Math.pow((cluster.centroid.getX() - point.getX()), 2) + Math.pow((cluster.centroid.getY() - point.getY()), 2));
+                if (distance < closest_distance) {
+                    closest_distance = distance;
+                    closest_ref = cluster;
+                }
+            }
+            try {
+                closest_ref.addPoint(point);
+            }
+            catch (NullPointerException e){
+                System.out.println("wtf bro") ;
             }
         }
     }
+
+
+
 }
