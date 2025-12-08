@@ -1,7 +1,7 @@
 public class Cluster {
     int centroidX;
     int centroidY;
-    point[] points;
+    Point[] points;
 
     public int getCentroidX() {
         return centroidX;
