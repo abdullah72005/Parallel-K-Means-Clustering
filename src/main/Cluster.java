@@ -3,15 +3,21 @@ package main;
 import java.util.ArrayList;
 
 public class Cluster {
-    ArrayList<Point> Points = new ArrayList<>();
+    ArrayList<Integer> PointsIds = new ArrayList<>();
     Point centroid;
+    private final Integer id;
 
-    public Cluster(Point centroid) {
+    public Cluster(Integer id, Point centroid) {
         this.centroid = centroid;
+        this.id = id;
     }
 
-    public ArrayList<Point> getPoints() {
-        return Points;
+    public int getId() {
+        return this.id;
+    }
+
+    public ArrayList<Integer> getPoints() {
+        return PointsIds;
     }
 
     public Point getCentroid() {
@@ -22,13 +28,21 @@ public class Cluster {
         this.centroid = centroid;
     }
 
-    public void setPoints(ArrayList<Point> points) {
-        this.Points = points;
+    public void setPoints(ArrayList<Integer> points) {
+        this.PointsIds = points;
     }
 
-    public void addPoint(Point point) {
-        this.Points.add(point);
+    public void addPoint(Integer pointid) {
+        this.PointsIds.add(pointid);
     }
 
+    public void removePoint(Integer pointid) {
+        this.PointsIds.remove(pointid);
+    }
 
+    @Override
+    public String toString() {
+        return "Cluster{" +
+                "centroid=" + centroid.toString();
+    }
 }

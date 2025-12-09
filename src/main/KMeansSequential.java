@@ -1,72 +1,107 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KMeansSequential {
-    private ArrayList<Point> Points;
+    private Map<Integer, Point> PointstoIdHash;
+    private Map<Integer, Integer> pointsToCentroidHash = new HashMap<>();
     private KMeansConfig config;
-    private Point[] centroids;
     private Cluster[] clusters;
 
-    public KMeansSequential(ArrayList<Point> points, KMeansConfig config) {
-        this.Points = points;
+    public KMeansSequential(Map<Integer, Point> PointstoIdHash, KMeansConfig config) {
+        this.PointstoIdHash = PointstoIdHash;
         this.config = config;
-        this.centroids  = new Point[config.k];
-        this.clusters = new Cluster[config.k ];
+        this.clusters = new Cluster[config.k];
+        initialize_centroids();
     }
 
     private void initialize_centroids() {
         for (int i = 0; i < this.config.k; i++) {
-            double x = Math.random() * 100;
-            double y = Math.random() * 100;
-            Point centroid = new Point(x, y);
-            this.centroids[i] = centroid;
-            this.clusters[i] = new Cluster(centroid);
+            double x = config.rng.nextDouble() * 100;
+            double y = config.rng.nextDouble() * 100;
+            clusters[i] = new Cluster(i, new Point(x, y));
         }
     }
 
     private void assign_points() {
-        for (Point point : this.Points){
-            double closest_distance = Double.POSITIVE_INFINITY;
+        // Clear cluster assignments
+        for (Cluster c : clusters) {
+            c.setPoints(new ArrayList<>());
+        }
+
+        for (Point point : PointstoIdHash.values()){
+            double closest_distance = Double.MAX_VALUE;
             Cluster closest_ref = null;
-            for (Cluster cluster : this.clusters) {
-                double distance = Math.sqrt(Math.pow((cluster.centroid.getX() - point.getX()), 2) + Math.pow((cluster.centroid.getY() - point.getY()), 2));
+
+            for (Cluster cluster : clusters) {
+                double distance = distance(point, cluster.getCentroid());
                 if (distance < closest_distance) {
                     closest_distance = distance;
                     closest_ref = cluster;
                 }
             }
+            
             try {
-                closest_ref.addPoint(point);
+                if (closest_ref == null) {
+                    System.out.println("Error: No cluster found for point " + point.getId());
+                    continue;
+                }
+                pointsToCentroidHash.put(point.getId(), closest_ref.getId());
+                closest_ref.addPoint(point.getId());
             }
             catch (NullPointerException e){
-                System.out.println("wtf bro") ;
+                System.out.println("Error assigning point: " + e.getMessage());
             }
         }
     }
     private void update_centroids(){
         for (Cluster cluster : clusters){
+            
+            // Case 1: cluster is empty → skip update (keep current centroid)
+            if (cluster.getPoints().isEmpty()) {
+                continue;
+            }
+
+            // Case 2: compute mean normally
             double sumX = 0;
             double sumY = 0;
-            int count = 0;
-            for (Point point : cluster.getPoints()){
-                sumX += point.getX();
-                sumY += point.getY();
-                count += 1;
+            for (Integer pointId : cluster.getPoints()) {
+                sumX += PointstoIdHash.get(pointId).getX();
+                sumY += PointstoIdHash.get(pointId).getY();
             }
-            double meanX = sumX / count;
-            double meanY = sumY / count;
-            cluster.setCentroid(new Point(meanX,meanY));
-            cluster.setPoints(new ArrayList<>());
+
+            double meanX = sumX / cluster.getPoints().size();
+            double meanY = sumY / cluster.getPoints().size();
+
+            cluster.setCentroid(new Point(meanX, meanY));
         }
     }
 
-    public Point[] run(){
+    public void run(){
         initialize_centroids();
         for (int i = 0; i < config.maxIterations; i++) {
             assign_points();
             update_centroids();
         }
-        return this.centroids;
+        assign_points(); // Final assignment
+    }
+
+    //getter for clusters
+    public Cluster[] getClusters() {
+        return clusters;
+    }
+
+    // getter for pointsToCentroidHash
+    public Map<Integer, Integer> getPointsToCentroidHash() {
+        return pointsToCentroidHash;
+    }
+
+
+    private double distance(Point a, Point b) {
+        double dx = a.getX() - b.getX();
+        double dy = a.getY() - b.getY();
+        return Math.sqrt(dx * dx + dy * dy);
     }
 }
