@@ -86,6 +86,9 @@ public class KMeansSequential {
             assign_points();
             boolean check = update_centroids();
             System.out.println(i);
+            if (check){
+                break;
+            }
         }
         assign_points();
     }

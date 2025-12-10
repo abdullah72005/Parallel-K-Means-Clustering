@@ -12,9 +12,9 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-           List<Point> tmp =  DataSetLoader.loadCSV("D:\\code\\java\\untitled\\src\\dataSet\\medium.csv");
+           List<Point> tmp =  DataSetLoader.loadCSV("/mnt/c/Users/abdul/OneDrive/Documents/VScode/Parallel-K-Means-Clustering/src/dataSet/large.csv");
            int k = DataSetLoader.getK(tmp);
-           KMeansConfig config = new KMeansConfig(k,10000,k,3000);
+           KMeansConfig config = new KMeansConfig(k,10000,k,5000);
 
            ArrayList<Point> points = new ArrayList<Point>(tmp);
            KMeansSequential seq = new KMeansSequential(points,config);
