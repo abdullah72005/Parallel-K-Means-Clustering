@@ -67,6 +67,10 @@ public class KMeansSequential {
             assign_points();
             update_centroids();
         }
-        return this.centroids;
+        Point[] finalcentroids = new Point[config.k];
+        for (int i = 0; i < config.k; i++) {
+            finalcentroids[i] = clusters[i].centroid;
+        }
+        return finalcentroids;
     }
 }
