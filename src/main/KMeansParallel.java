@@ -1,20 +1,23 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.concurrent.ForkJoinPool;
 
-public class KMeansSequential {
-    private ArrayList<Point> Points;
+public class KMeansParallel {
     private KMeansConfig config;
+    private ArrayList<Point> points;
     private Cluster[] clusters;
 
-    public KMeansSequential(ArrayList<Point> points, KMeansConfig config) {
-        this.Points = points;
+    public ForkJoinPool pool = new ForkJoinPool();
+
+
+    public KMeansParallel(ArrayList<Point> points, KMeansConfig config) {
+        this.points = points;
         this.config = config;
         this.clusters = new Cluster[config.k];
-        initialize_centroids();
     }
 
-    protected void initialize_centroids() {
+    private void par_initialize_centroids() {
         for (int i = 0; i < this.config.k; i++) {
             double x = config.rng.nextDouble() * 100;
             double y = config.rng.nextDouble() * 100;
@@ -23,30 +26,40 @@ public class KMeansSequential {
         }
     }
 
-    public void assign_points() {
-        for ( Cluster c : clusters){
-            c.setPoints(new ArrayList<>());
+    public void run() {
+        par_initialize_centroids();
+
+        for (int i = 0; i < config.maxIterations; i++) {
+
+            // Clear all clusters before assignment
+            for (Cluster cluster : clusters) {
+                cluster.setPoints(new ArrayList<>());
+            }
+
+            // assign points using recursive task then assigning it to my sequential object to call other funtions 
+            KMeansAssignTask task = new KMeansAssignTask(points, clusters, 0, points.size(), config);
+            clusters = pool.invoke(task);
+
+            boolean check = par_update_centroids();
+            System.out.println("Iteration " + i);
+            if (check){
+                break;
+            }
         }
-        for (Point point : this.Points){
-            double closest_distance = Double.POSITIVE_INFINITY;
-            Cluster closest_ref = null;
-            for (Cluster cluster : this.clusters) {
-                double distance = distance(point , cluster.getCentroid());
-                if (distance < closest_distance) {
-                    closest_distance = distance;
-                    closest_ref = cluster;
-                }
-            }
-            try {
-                closest_ref.addPoint(point);
-            }
-            catch (NullPointerException e){
-                System.out.println("null pointer exception: " + e);
-            }
+
+        // Final assignment
+        for (Cluster cluster : clusters) {
+            cluster.setPoints(new ArrayList<>());
         }
+        KMeansAssignTask task = new KMeansAssignTask(points, clusters, 0, points.size(), config);
+        clusters = pool.invoke(task);
     }
 
-    private boolean update_centroids(){
+    public Cluster[] getClusters(){
+        return this.clusters;
+    }
+
+    private boolean par_update_centroids() {
         Point old_point;
         Point new_point;
         double total_distance = 0;
@@ -80,24 +93,4 @@ public class KMeansSequential {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    public void run(){
-        initialize_centroids();
-        for (int i = 0; i < config.maxIterations; i++) {
-            assign_points();
-            boolean check = update_centroids();
-            System.out.println(i);
-            if (check){
-                break;
-            }
-        }
-        assign_points();
-    }
-
-    public Cluster[] getClusters(){
-        return this.clusters;
-    }
-
-    public void setClusters(Cluster[] clusters) {
-        this.clusters = clusters;
-    }
 }

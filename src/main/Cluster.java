@@ -30,5 +30,9 @@ public class Cluster {
         this.Points.add(point);
     }
 
+    public void addPoints(ArrayList<Point> points) {
+        this.Points.addAll(points);
+    }
+
 
 }

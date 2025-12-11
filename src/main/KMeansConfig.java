@@ -6,6 +6,7 @@ public class KMeansConfig {
     public final int k;
     public final int maxIterations;
     public final double tolerance;
+    public int threshold;
     public final Random rng;
 
     public KMeansConfig(int k, int maxIterations, double tolerance, long seed) {
@@ -13,5 +14,13 @@ public class KMeansConfig {
         this.maxIterations = maxIterations;
         this.tolerance = tolerance;
         this.rng = new Random(seed);
+    }
+
+        public KMeansConfig(int k, int maxIterations, double tolerance, long seed, int threshold) {
+        this.k = k;
+        this.maxIterations = maxIterations;
+        this.tolerance = tolerance;
+        this.rng = new Random(seed);
+        this.threshold = threshold;
     }
 }
