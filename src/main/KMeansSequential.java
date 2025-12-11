@@ -6,6 +6,7 @@ public class KMeansSequential {
     private ArrayList<Point> Points;
     private KMeansConfig config;
     private Cluster[] clusters;
+    private int noOfIterations = 0;
 
     public KMeansSequential(ArrayList<Point> points, KMeansConfig config) {
         this.Points = points;
@@ -31,7 +32,7 @@ public class KMeansSequential {
             double closest_distance = Double.POSITIVE_INFINITY;
             Cluster closest_ref = null;
             for (Cluster cluster : this.clusters) {
-                double distance = distance(point , cluster.getCentroid());
+                double distance = config.distance(point , cluster.getCentroid());
                 if (distance < closest_distance) {
                     closest_distance = distance;
                     closest_ref = cluster;
@@ -65,7 +66,7 @@ public class KMeansSequential {
             double meanY = sumY / cluster.getPoints().size();
             cluster.setCentroid(new Point(meanX,meanY));
             new_point = cluster.getCentroid();
-            total_distance += distance(old_point,new_point);
+            total_distance += config.distance(old_point,new_point);
         }
         if (total_distance < config.tolerance){
             return true;
@@ -73,16 +74,10 @@ public class KMeansSequential {
         return false;
     }
 
-
-    private double distance(Point a, Point b) {
-        double dx = a.getX() - b.getX();
-        double dy = a.getY() - b.getY();
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
     public void run(){
         initialize_centroids();
         for (int i = 0; i < config.maxIterations; i++) {
+            noOfIterations++;
             assign_points();
             boolean check = update_centroids();
             System.out.println(i);
@@ -99,5 +94,20 @@ public class KMeansSequential {
 
     public void setClusters(Cluster[] clusters) {
         this.clusters = clusters;
+    }
+
+    public double getSSE() {
+        double sse = 0;
+        for (Cluster c : clusters) {
+            for (Point p : c.Points) {
+                sse += config.distance(c.getCentroid(), p);
+            }
+        }
+
+        return Math.floor(sse * 100) / 100;
+    }
+
+    public int getNoOfIterations() {
+        return noOfIterations;
     }
 }

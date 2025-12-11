@@ -16,11 +16,17 @@ public class KMeansConfig {
         this.rng = new Random(seed);
     }
 
-        public KMeansConfig(int k, int maxIterations, double tolerance, long seed, int threshold) {
+    public KMeansConfig(int k, int maxIterations, double tolerance, long seed, int threshold) {
         this.k = k;
         this.maxIterations = maxIterations;
         this.tolerance = tolerance;
         this.rng = new Random(seed);
         this.threshold = threshold;
+    }
+
+    public double distance(Point a, Point b) {
+        double dx = a.getX() - b.getX();
+        double dy = a.getY() - b.getY();
+        return Math.sqrt(dx * dx + dy * dy);
     }
 }

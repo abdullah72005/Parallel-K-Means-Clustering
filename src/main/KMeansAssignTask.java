@@ -57,7 +57,7 @@ public class KMeansAssignTask extends RecursiveTask<Cluster[]> {
             double closest_distance = Double.POSITIVE_INFINITY;
             Cluster closest_ref = null;
             for (Cluster cluster : localClusters) {
-                double distance = distance(point , cluster.getCentroid());
+                double distance = config.distance(point , cluster.getCentroid());
                 if (distance < closest_distance) {
                     closest_distance = distance;
                     closest_ref = cluster;
@@ -74,13 +74,6 @@ public class KMeansAssignTask extends RecursiveTask<Cluster[]> {
             left[i].addPoints(right[i].getPoints());
         }
         return left;
-    }
-
-
-    private double distance(Point a, Point b) {
-        double dx = a.getX() - b.getX();
-        double dy = a.getY() - b.getY();
-        return Math.sqrt(dx * dx + dy * dy);
     }
 
 }

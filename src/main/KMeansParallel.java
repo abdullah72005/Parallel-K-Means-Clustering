@@ -7,6 +7,7 @@ public class KMeansParallel {
     private KMeansConfig config;
     private ArrayList<Point> points;
     private Cluster[] clusters;
+    private int noOfIterations = 0;
 
     public ForkJoinPool pool = new ForkJoinPool();
 
@@ -30,6 +31,7 @@ public class KMeansParallel {
         par_initialize_centroids();
 
         for (int i = 0; i < config.maxIterations; i++) {
+            noOfIterations++;
 
             // Clear all clusters before assignment
             for (Cluster cluster : clusters) {
@@ -78,7 +80,7 @@ public class KMeansParallel {
             double meanY = sumY / cluster.getPoints().size();
             cluster.setCentroid(new Point(meanX,meanY));
             new_point = cluster.getCentroid();
-            total_distance += distance(old_point,new_point);
+            total_distance += config.distance(old_point,new_point);
         }
         if (total_distance < config.tolerance){
             return true;
@@ -87,10 +89,19 @@ public class KMeansParallel {
     }
 
 
-    private double distance(Point a, Point b) {
-        double dx = a.getX() - b.getX();
-        double dy = a.getY() - b.getY();
-        return Math.sqrt(dx * dx + dy * dy);
+    public double getSSE() {
+        double sse = 0;
+        for (Cluster c : clusters) {
+            for (Point p : c.Points) {
+                sse += config.distance(c.getCentroid(), p);
+            }
+        }
+
+        return Math.floor(sse * 100) / 100;
+    }
+
+    public int getNoOfIterations() {
+        return noOfIterations;
     }
 
 }
