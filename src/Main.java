@@ -1,20 +1,18 @@
 import dataSet.DataSetLoader;
-import main.Point;
-import main.Cluster;
-import main.KMeansConfig;
-import main.KMeansParallel;
-import main.KMeansSequential;
-import main.KMeansVisualizer;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import main.Cluster;
+import main.KMeansConfig;
+import main.KMeansParallel;
+import main.KMeansVisualizer;
+import main.Point;
 
 public class Main {
     public static void main(String[] args) {
 
         try {
-           List<Point> tmp =  DataSetLoader.loadCSV("/mnt/c/Users/abdul/OneDrive/Documents/VScode/Parallel-K-Means-Clustering/src/dataSet/medium.csv");
+           List<Point> tmp =  DataSetLoader.loadCSV("dataSet/great_medium.csv");
            int k = DataSetLoader.getK(tmp);
            KMeansConfig config = new KMeansConfig(k,10000,k/3,5130, 1000);
            Cluster[] cls;
