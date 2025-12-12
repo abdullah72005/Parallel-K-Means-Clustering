@@ -5,20 +5,37 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class KMeansVisualizer extends JFrame {
+
     private ClusterPlotter plotter;
 
-    public KMeansVisualizer(Cluster[] clusters, ArrayList<Point> allPoints) {
+    public KMeansVisualizer(Cluster[] clusters, ArrayList<Point> allPoints,
+                            double sse, double timeSeconds, int iterations,
+                            boolean showStats) {
+
         setTitle("K-Means Clustering Visualization");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 900);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+        setSize(900, 950); 
         setLocationRelativeTo(null);
-        
+
+        JPanel content = new JPanel(new BorderLayout());
+        content.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0)); 
+        setContentPane(content);
+
         plotter = new ClusterPlotter(clusters, allPoints);
-        add(plotter);
-        
+        add(plotter, BorderLayout.CENTER);
+
+        if (showStats) {
+            JPanel stats = new JPanel(new GridLayout(1, 3));
+            stats.add(new JLabel("SSE: " + sse, SwingConstants.CENTER));
+            stats.add(new JLabel(String.format("Time (s): %.4f", timeSeconds), SwingConstants.CENTER));
+            stats.add(new JLabel("Iterations: " + iterations, SwingConstants.CENTER));
+            add(stats, BorderLayout.SOUTH);
+        }
+
         setVisible(true);
     }
 
+    
     private static class ClusterPlotter extends JPanel {
         private Cluster[] clusters;
         private ArrayList<Point> allPoints;
@@ -56,7 +73,6 @@ public class KMeansVisualizer extends JFrame {
             double plotWidth = width - 2 * PADDING;
             double plotHeight = height - 2 * PADDING;
 
-            // Find min and max coordinates for scaling
             double minX = Double.POSITIVE_INFINITY, maxX = Double.NEGATIVE_INFINITY;
             double minY = Double.POSITIVE_INFINITY, maxY = Double.NEGATIVE_INFINITY;
 
@@ -75,7 +91,6 @@ public class KMeansVisualizer extends JFrame {
                 maxY = Math.max(maxY, centroid.getY());
             }
 
-            // Add padding to the range
             double rangeX = maxX - minX;
             double rangeY = maxY - minY;
             if (rangeX == 0) rangeX = 1;
@@ -85,7 +100,6 @@ public class KMeansVisualizer extends JFrame {
             minY -= rangeY * 0.05;
             maxY += rangeY * 0.05;
 
-            // Draw lines from points to centroids
             g2d.setColor(new Color(200, 200, 200));
             g2d.setStroke(new BasicStroke(0.5f));
 
@@ -102,12 +116,10 @@ public class KMeansVisualizer extends JFrame {
                 }
             }
 
-            // Draw points
             for (int clusterIdx = 0; clusterIdx < clusters.length; clusterIdx++) {
                 Cluster cluster = clusters[clusterIdx];
                 g2d.setColor(colors[clusterIdx]);
 
-                // Draw points in this cluster
                 for (Point point : cluster.getPoints()) {
                     int x = scaleX(point.getX(), minX, maxX, plotWidth, PADDING);
                     int y = scaleY(point.getY(), minY, maxY, plotHeight, PADDING);
@@ -115,44 +127,34 @@ public class KMeansVisualizer extends JFrame {
                 }
             }
 
-            // Draw centroids as black points
             g2d.setColor(Color.BLACK);
-            for (int clusterIdx = 0; clusterIdx < clusters.length; clusterIdx++) {
-                Cluster cluster = clusters[clusterIdx];
+            for (Cluster cluster : clusters) {
                 Point centroid = cluster.getCentroid();
                 int centroidX = scaleX(centroid.getX(), minX, maxX, plotWidth, PADDING);
                 int centroidY = scaleY(centroid.getY(), minY, maxY, plotHeight, PADDING);
                 g2d.fillOval(centroidX - CENTROID_RADIUS, centroidY - CENTROID_RADIUS, CENTROID_RADIUS * 2, CENTROID_RADIUS * 2);
             }
 
-            // Draw cluster labels with point counts
+            
             g2d.setFont(new Font("Arial", Font.BOLD, 12));
             int legendY = 20;
             for (int clusterIdx = 0; clusterIdx < clusters.length; clusterIdx++) {
                 Cluster cluster = clusters[clusterIdx];
                 int pointCount = cluster.getPoints().size();
-
                 String label = String.format("C%d (%d pts)", clusterIdx, pointCount);
-                
-                // Draw colored square
                 g2d.setColor(colors[clusterIdx]);
                 int rectX = width - 160;
                 g2d.fillRect(rectX, legendY, 12, 12);
-                
-                // Draw text
                 g2d.setColor(Color.BLACK);
                 g2d.drawString(label, rectX + 18, legendY + 11);
-                
                 legendY += 20;
             }
 
-            // Draw axes
+            
             g2d.setColor(Color.BLACK);
             g2d.setStroke(new BasicStroke(1));
             g2d.drawLine(PADDING, height - PADDING, width - PADDING, height - PADDING); // X-axis
             g2d.drawLine(PADDING, PADDING, PADDING, height - PADDING); // Y-axis
-
-            // Draw axis labels
             g2d.drawString(String.format("%.1f", minX), PADDING - 20, height - PADDING + 20);
             g2d.drawString(String.format("%.1f", maxX), width - PADDING - 20, height - PADDING + 20);
             g2d.drawString(String.format("%.1f", minY), PADDING - 40, PADDING + 5);
@@ -164,7 +166,6 @@ public class KMeansVisualizer extends JFrame {
         }
 
         private int scaleY(double y, double minY, double maxY, double plotHeight, int padding) {
-            // Invert Y axis for typical chart visualization
             return (int) (padding + (maxY - y) / (maxY - minY) * plotHeight);
         }
     }

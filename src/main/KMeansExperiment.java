@@ -48,6 +48,7 @@ public class KMeansExperiment  {
     public void runBoth(){
         runSequential();
         runParallel();
+        
     }
 
     public long getParallel_time() {
