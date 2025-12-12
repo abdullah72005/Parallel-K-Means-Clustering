@@ -6,22 +6,25 @@ public class KMeansConfig {
     public final int k;
     public final int maxIterations;
     public final double tolerance;
-    public int threshold;
+    public final int threshold;
     public final Random rng;
-
-    public KMeansConfig(int k, int maxIterations, double tolerance, long seed) {
+    public final int i;
+    public KMeansConfig(int k, int maxIterations, double tolerance, long seed , int i) {
         this.k = k;
         this.maxIterations = maxIterations;
         this.tolerance = tolerance;
         this.rng = new Random(seed);
+        threshold = 0;
+        this.i = i;
     }
 
-    public KMeansConfig(int k, int maxIterations, double tolerance, long seed, int threshold) {
+    public KMeansConfig(int k, int maxIterations, double tolerance, long seed, int threshold, int i) {
         this.k = k;
         this.maxIterations = maxIterations;
         this.tolerance = tolerance;
         this.rng = new Random(seed);
         this.threshold = threshold;
+        this.i = i;
     }
 
     public double distance(Point a, Point b) {
