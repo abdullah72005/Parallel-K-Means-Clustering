@@ -12,9 +12,9 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-           List<Point> tmp =  DataSetLoader.loadCSV("dataSet/great_medium.csv");
+           List<Point> tmp =  DataSetLoader.loadCSV("dataSet/great_large.csv");
            int k = DataSetLoader.getK(tmp);
-           KMeansConfig config = new KMeansConfig(k,10000,k/3,5130, 1000);
+           KMeansConfig config = new KMeansConfig(k,10000,k/3,51930, 1000);
            Cluster[] cls;
            ArrayList<Point> points = new ArrayList<Point>(tmp);
 
