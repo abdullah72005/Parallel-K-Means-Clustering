@@ -1,16 +1,15 @@
 import dataSet.DataSetMaker;
 import java.io.IOException;
 
-public class Example {
+public class GenerateDataset {
     public static void main(String[] args) {
         //Generating a dataset
-        String filename = "dataSet/great_small.csv";
+        String filename = "dataSet/great_large.csv";
         int K = 3;
         int N = 1000;
         
-        //sigma should be between 2 and 3 to ensure that the upperbound is 100
-        double sigma = 5;
-        long seed = 20;
+        double sigma = 6;
+        long seed = 693;
 
         try {
             DataSetMaker.generateCSV(filename, K, N, sigma, seed);

@@ -62,7 +62,7 @@ public class MainGUI extends JFrame {
             int k = dataSet.DataSetLoader.getK(tmp);
             ArrayList<Point> points = new ArrayList<>(tmp);
 
-            KMeansConfig config = new KMeansConfig(k, 10000, k / 3, 50, 1000, 10);
+            KMeansConfig config = new KMeansConfig(k, 10000, k/3, 50, 1000, 10);
             KMeansExperiment exp = new KMeansExperiment(points, config);
 
             switch (mode) {
